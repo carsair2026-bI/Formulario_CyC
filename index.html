@@ -3,759 +3,659 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gestión Comercial</title>
-
-<link rel="shortcut icon" href="./icono.png">
-<link rel="icon" type="image/png" href="./icono.png">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<title>Registro de Gestión Comercial</title>
 
 <style>
 * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', sans-serif;
 }
 
 body {
-    background: linear-gradient(135deg, #f5f7fa, #e4e8f0);
-    min-height: 100vh;
-    padding: 20px;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f5f7;
+    color: #333;
 }
 
-.container {
-    width: 100%;
+.header {
+    background: #e51c22;
+    color: white;
+    padding: 18px 25px;
+    box-shadow: 0 3px 10px rgba(0,0,0,.15);
+}
+
+.header-content {
     max-width: 1100px;
     margin: auto;
-}
-
-.navbar {
-    background: #E51C22;
-    border-radius: 25px;
-    padding: 12px 30px;
-    margin-bottom: 25px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 20px;
 }
 
-.logo { height: 80px; }
-
-.navbar-title {
-    color: white;
-    font-size: 40px;
+.logo {
+    font-size: 28px;
     font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.header-title {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 0 18px 40px;
 }
 
 .card {
     background: white;
-    border-radius: 20px;
+    border-radius: 16px;
     padding: 25px;
-    box-shadow: 0 10px 25px rgba(0,0,0,.12);
-    border-left: 8px solid #E51C22;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,.08);
 }
 
-.row {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-    flex-wrap: wrap;
-}
-
-.col-30 { flex: 3; min-width: 120px; }
-.col-60 { flex: 6; min-width: 200px; }
-.col-10 { flex: 1; }
-
-label {
-    display: block;
-    margin-top: 12px;
-    font-weight: 600;
-}
-
-select, input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-}
-
-button {
-    margin-top: 20px;
-    padding: 12px;
-    width: 100%;
-    border: none;
-    border-radius: 12px;
-    background: #E51C22;
-    color: white;
-    font-size: 16px;
+.card-title {
+    margin: 0 0 20px;
+    font-size: 19px;
     font-weight: 700;
-    cursor: pointer;
+    color: #333;
 }
 
-button:disabled {
-    background: #999;
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
 }
 
-.btn-descarga {
-    margin-top: 10px;
+.field {
+    display: flex;
+    flex-direction: column;
+}
+
+.field label {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 7px;
+    color: #444;
+}
+
+.field input,
+.field select {
+    width: 100%;
+    height: 46px;
+    border: 1px solid #d8d8d8;
+    border-radius: 9px;
+    padding: 0 13px;
+    font-size: 14px;
+    outline: none;
     background: white;
-    color: #E51C22;
-    border: 2px solid #E51C22;
-    display: none;
+    transition: .2s;
+}
+
+.field input:focus,
+.field select:focus {
+    border-color: #e51c22;
+    box-shadow: 0 0 0 3px rgba(229,28,34,.10);
+}
+
+.question-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 15px rgba(0,0,0,.07);
+}
+
+.question-number {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-}
-
-.btn-descarga.visible {
-    display: flex;
-}
-
-.btn-descarga i {
-    font-size: 18px;
-}
-
-.mensaje-exito {
-    position: fixed;
-    top: 30px;
-    right: 30px;
-    background: #28a745;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    border-radius: 50px;
+    background: #e51c22;
     color: white;
-    padding: 18px 25px;
-    border-radius: 15px;
-    font-size: 18px;
     font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,.2);
-    transform: translateX(400px);
-    opacity: 0;
-    transition: .4s;
-    z-index: 9999;
+    font-size: 14px;
+    margin-bottom: 12px;
 }
 
-.mensaje-exito.mostrar {
-    transform: translateX(0);
-    opacity: 1;
-}
-
-.mensaje-exito i {
-    font-size: 28px;
-}
-
-@keyframes girar {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
-}
-
-.bi-arrow-repeat {
-    display: inline-block;
-    animation: girar 1s linear infinite;
-}
-
-.separador {
-    margin-top: 25px;
-    margin-bottom: 10px;
-    padding: 12px 15px;
-    background: #f8f9fa;
-    border-left: 6px solid #E51C22;
-    border-radius: 10px;
-    font-size: 20px;
+.question-title {
+    font-size: 17px;
     font-weight: 700;
-    color: #E51C22;
+    margin-bottom: 17px;
+    line-height: 1.4;
 }
 
-#loader {
-    display: none;
-    align-items: center;
+.options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-    color: #E51C22;
-    font-weight: 600;
-    margin-bottom: 15px;
 }
 
-#loader.visible {
+.option {
+    position: relative;
+}
+
+.option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.option label {
     display: flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 11px 14px;
+    border: 1px solid #ddd;
+    border-radius: 9px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1.35;
+    transition: .2s;
+    background: #fff;
 }
 
-#loader i {
-    font-size: 22px;
-    animation: girar 1s linear infinite;
+.option label:hover {
+    border-color: #e51c22;
+    background: #fff7f7;
 }
 
+.option input:checked + label {
+    border-color: #e51c22;
+    background: #ffecee;
+    color: #b9151a;
+    font-weight: 700;
+}
+
+.required {
+    color: #e51c22;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.btn {
+    border: 0;
+    border-radius: 9px;
+    height: 48px;
+    padding: 0 28px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.btn-primary {
+    background: #e51c22;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #c9151b;
+}
+
+.btn-primary:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background: #e9e9e9;
+    color: #444;
+}
+
+.btn-secondary:hover {
+    background: #ddd;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px 20px;
+    font-size: 16px;
+    color: #666;
+}
+
+.message {
+    display: none;
+    padding: 15px 18px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.message.success {
+    display: block;
+    background: #e9f8ed;
+    color: #197333;
+    border: 1px solid #b9e4c3;
+}
+
+.message.error {
+    display: block;
+    background: #fff0f0;
+    color: #c4161c;
+    border: 1px solid #f0b9bb;
+}
+
+.empty {
+    text-align: center;
+    padding: 30px;
+    color: #777;
+}
+
+@media (max-width: 700px) {
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .grid,
+    .options {
+        grid-template-columns: 1fr;
+    }
+
+    .container {
+        margin-top: 20px;
+    }
+
+    .card,
+    .question-card {
+        padding: 18px;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
 </style>
 </head>
 
 <body>
-<div id="mensajeExito" class="mensaje-exito">
-    <i class="bi bi-check-circle-fill"></i>
-    <span>¡Registrado correctamente!</span>
-</div>
-<div class="navbar">
-    <img src="logo.png" class="logo">
-    <div class="navbar-title">Gestión Comercial</div>
-</div>
 
-<div class="container">
-<div class="card">
-
-    <h2>Formulario de Gestión</h2>
-    <div id="loader" class="visible">
-        <i class="bi bi-arrow-repeat"></i>
-        <span>Preparando Formulario ...</span>
+<header class="header">
+    <div class="header-content">
+        <div class="logo">CARSA</div>
+        <div class="header-title">Registro de Gestión Comercial</div>
     </div>
+</header>
 
-    <form id="form">
+<main class="container">
 
-        <div class="row">
-            <div class="col-30">
-                <label>Región</label>
-                <select id="region" disabled>
-                    <option value="">Seleccione su respuesta</option>
-                </select>
+    <div id="mensaje" class="message"></div>
+
+    <form id="formulario">
+
+        <div class="card">
+            <h2 class="card-title">Datos del registro</h2>
+
+            <div class="grid">
+
+                <div class="field">
+                    <label for="codigoTienda">
+                        Código de tienda <span class="required">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="codigoTienda"
+                        name="CODIGO_TIENDA"
+                        required
+                        autocomplete="off"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="dniFuncionario">
+                        DNI funcionario <span class="required">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="dniFuncionario"
+                        name="DNI_FUNCIONARIO"
+                        required
+                        maxlength="15"
+                        autocomplete="off"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="tipoDocCliente">
+                        Tipo documento cliente <span class="required">*</span>
+                    </label>
+                    <select
+                        id="tipoDocCliente"
+                        name="TIPO_DOC_CLIENTE"
+                        required
+                    >
+                        <option value="">Seleccione</option>
+                        <option value="DNI">DNI</option>
+                        <option value="CE">CE</option>
+                        <option value="PASAPORTE">PASAPORTE</option>
+                        <option value="OTRO">OTRO</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="dniCliente">
+                        DNI / Documento cliente <span class="required">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="dniCliente"
+                        name="DNI_CLIENTE"
+                        required
+                        maxlength="20"
+                        autocomplete="off"
+                    >
+                </div>
+
             </div>
-
-            <div class="col-60">
-                <label>Tienda</label>
-                <select id="tienda" disabled>
-                    <option value="">Seleccione su respuesta</option>
-                </select>
-            </div>
-
-            <div class="col-10"></div>
         </div>
 
-        <label>Vendedor</label>
-        <select id="vendedor" disabled>
-            <option value="">Seleccione su respuesta</option>
-        </select>
-        <button type="button" id="btnDescargarLista" class="btn-descarga">
-            <i class="bi bi-file-earmark-pdf-fill"></i>
-            <span id="btnDescargarListaTexto">Descargar Lista de Clientes</span>
-        </button>
-        <div id="loaderClientes" style="display:none;align-items:center;gap:8px;margin-top:10px;color:#E51C22;font-weight:600">
-            <i class="bi bi-arrow-repeat"></i>
-            <span>Cargando base de clientes...</span>
-        </div>
-        <div class="separador">Gestión al Cliente</div>
-
-        <div class="row">
-            <div class="col-30">
-                <label>Tipo Doc</label>
-                <select id="tipo_doc">
-                    <option value="">Seleccione su respuesta</option>
-                    <option>DNI</option>
-                    <option>RUC</option>
-                    <option>Pasaporte</option>
-                    <option>Otro</option>
-                </select>
+        <div id="contenedorPreguntas">
+            <div class="loading">
+                Cargando preguntas...
             </div>
-
-            <div class="col-60">
-                <label>Número Documento</label>
-                <input id="num_doc" maxlength="20" required>
-            </div>
-
-            <div class="col-10"></div>
         </div>
 
-        <input id="tipo_doc_otro" placeholder="Especifique el tipo de documento" style="display:none; margin-top:8px;">
+        <div class="card">
+            <div class="actions">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="limpiarFormulario()"
+                >
+                    Limpiar
+                </button>
 
-        <label>Base Cliente</label>
-        <select id="base">
-            <option value="">Seleccione su respuesta</option>
-            <option>Base Credialtoque</option>
-            <option>Base 3M</option>
-            <option>Base Aprobados sin compra</option>
-            <option>Base Campañas</option>
-        </select>
-
-        <label>Tipo Gestión</label>
-        <select id="gestion">
-            <option value="">Seleccione su respuesta</option>
-            <option>Telefónica y/o Whatsapp</option>
-            <option>Visita terrena</option>
-        </select>
-
-        <label>Resultado</label>
-        <select id="resultado">
-            <option value="">Seleccione su respuesta</option>
-            <option>Cliente se acercará a tienda a compra</option>
-            <option>Cliente no contesta</option>
-            <option>Cliente no se le ubica en vivienda</option>
-            <option>Cliente no desea, por tasa</option>
-            <option>Cliente no desea, no cuenta con inicial</option>
-            <option>Fuera zona</option>
-            <option>Cliente compro al contado</option>
-            <option>Teléfono fuera de servicio / errado</option>
-            <option>No pertenece a la zona</option>
-        </select>
-
-        <button id="btn" disabled>Guardar Gestión</button>
+                <button
+                    type="submit"
+                    id="btnGuardar"
+                    class="btn btn-primary"
+                >
+                    Registrar
+                </button>
+            </div>
+        </div>
 
     </form>
 
-</div>
-</div>
+</main>
 
 <script>
-const API = const MAESTRO_URL   = API + "?action=maestro";
-const CLIENTES_URL  = API + "?action=clientes";
-let datos = []; 
-let clientes = [];
-let clientesCargados = false;
-let pdfDescargado = false;
-function clean(v) {
-    return (v || "").toString().trim();
-}
 
-function mostrarExito() {
-    const msg = document.getElementById("mensajeExito");
-    msg.classList.add("mostrar");
-    setTimeout(() => msg.classList.remove("mostrar"), 3000);
-}
+const API_URL = 'AKfycbxjuKy636oJTr1HSD--BqYSpMYy5oeqiNUL_sbnXeJNTuAvAokPSnqvJuQiKSSbe2HeMA';
 
-function resetForm() {
+let preguntas = [];
 
-    form.reset();
+document.addEventListener('DOMContentLoaded', cargarPreguntas);
 
-    const tipoDocOtro = document.getElementById("tipo_doc_otro");
-
-    if (tipoDocOtro) {
-        tipoDocOtro.value = "";
-        tipoDocOtro.style.display = "none";
-    }
-
-    tienda.innerHTML =
-        '<option value="">Seleccione su respuesta</option>';
-
-    vendedor.innerHTML =
-        '<option value="">Seleccione su respuesta</option>';
-
-    ocultarBotonDescarga();
-
-    pdfDescargado = false;
-}
-
-function procesarDatos(csvText) {
-    const r = Papa.parse(csvText, { header: true, skipEmptyLines: true });
-    datos = r.data;
-
-    const regiones = [...new Set(
-        datos.map(x => clean(x.REG)).filter(x => x)
-    )];
-
-    region.innerHTML =
-        '<option value="">Seleccione su respuesta</option>' +
-        regiones.map(rg => `<option>${rg}</option>`).join("");
-
-    region.disabled   = false;
-    tienda.disabled   = false;
-    vendedor.disabled = false;
-    btn.disabled      = false;
-
-    document.getElementById("loader").classList.remove("visible");
-}
-
-function mostrarErrorCarga(mensaje = "Error al cargar datos. Recargue la página.") {
-    document.getElementById("loader").innerHTML =
-        '<i class="bi bi-exclamation-triangle-fill" style="color:#E51C22;font-size:22px"></i>' +
-        `<span style="color:#E51C22">${mensaje}</span>`;
-}
-
-async function cargarMaestro() {
-    try {
-        const resp = await fetch(MAESTRO_URL, {
-            method: "GET",
-            cache: "no-store",
-            redirect: "follow"
-        });
-
-        const text = await resp.text();
-
-        console.log("Estado maestro:", resp.status);
-        console.log("URL final:", resp.url);
-        console.log("Respuesta maestro:", text.substring(0, 500));
-        if (!text || text.trim().length < 10) {
-            throw new Error("La respuesta del maestro está vacía");
-        }
-        if (
-            text.trim().startsWith("<!DOCTYPE") ||
-            text.trim().startsWith("<html") ||
-            text.includes("<title>Sign in")
-        ) {
-            throw new Error("Google Apps Script devolvió HTML en lugar de CSV");
-        }
-
-        procesarDatos(text);
-
-    } catch (err) {
-        console.error("Error cargando maestro:", err);
-
-        mostrarErrorCarga(
-            "Error al cargar datos: " + err.message
-        );
-    }
-}
-
-async function cargarClientes() {
-
-    mostrarLoaderClientes();
+async function cargarPreguntas() {
+    const contenedor = document.getElementById('contenedorPreguntas');
 
     try {
+        const response = await fetch(
+            API_URL + '?action=preguntas'
+        );
 
-        const resp = await fetch(CLIENTES_URL, {
-            cache: "no-store"
-        });
-
-        if (!resp.ok)
-            throw new Error("HTTP " + resp.status);
-
-        const text = await resp.text();
-
-        const r = Papa.parse(text, {
-            header: true,
-            skipEmptyLines: true
-        });
-
-        clientes = r.data;
-
-    } catch(err) {
-
-        console.error("Error cargando clientes:", err.message);
-        clientes = [];
-
-    } finally {
-
-        clientesCargados = true;
-        ocultarLoaderClientes();
-
-    }
-}
-
-cargarMaestro();
-cargarClientes();
-
-function cargarTiendas() {
-    const reg = clean(region.value);
-    tienda.innerHTML  = '<option value="">Seleccione su respuesta</option>';
-    vendedor.innerHTML = '<option value="">Seleccione su respuesta</option>';
-    ocultarBotonDescarga();
-
-    if (!reg) return;
-
-    const tiendas = [...new Set(
-        datos.filter(x => clean(x.REG) === reg).map(x => clean(x.TIENDA))
-    )];
-    tienda.innerHTML += tiendas.map(t => `<option>${t}</option>`).join("");
-}
-function mostrarLoaderClientes() {
-    document.getElementById("loaderClientes").style.display = "flex";
-}
-
-function ocultarLoaderClientes() {
-    document.getElementById("loaderClientes").style.display = "none";
-}
-function cargarVendedores() {
-    const reg = clean(region.value);
-    const tie = clean(tienda.value);
-    vendedor.innerHTML = '<option value="">Seleccione su respuesta</option>';
-    ocultarBotonDescarga();
-
-    if (!reg || !tie) return;
-
-    const vend = datos.filter(x =>
-        clean(x.REG) === reg && clean(x.TIENDA) === tie
-    );
-    vendedor.innerHTML += vend.map(v =>
-        `<option value="${v.ID_VEN}">${v.VENDEDOR}</option>`
-    ).join("");
-}
-
-region.onchange  = cargarTiendas;
-tienda.onchange  = cargarVendedores;
-
-function clientesDelVendedor(idVen) {
-    const idVenLimpio = clean(idVen);
-    return clientes.filter(c => clean(c.DOC_VENDEDOR) === idVenLimpio);
-}
-
-function ocultarBotonDescarga() {
-    const btnDesc = document.getElementById("btnDescargarLista");
-    btnDesc.classList.remove("visible");
-}
-
-function actualizarBotonDescarga() {
-
-    const btnDesc = document.getElementById("btnDescargarLista");
-    const texto = document.getElementById("btnDescargarListaTexto");
-
-    pdfDescargado = false;
-
-    if (!clientesCargados) {
-        mostrarLoaderClientes();
-        ocultarBotonDescarga();
-        return;
-    }
-
-    ocultarLoaderClientes();
-
-    if (!vendedor.value) {
-        ocultarBotonDescarga();
-        return;
-    }
-
-    const misClientes = clientesDelVendedor(vendedor.value);
-
-    if (misClientes.length === 0) {
-        ocultarBotonDescarga();
-        return;
-    }
-
-    texto.textContent = `Descargar Lista de Clientes (${misClientes.length})`;
-    btnDesc.classList.add("visible");
-
-}
-vendedor.addEventListener("change", actualizarBotonDescarga);
-
-document.getElementById("btnDescargarLista").onclick = () => {
-    const idVen = vendedor.value;
-    if (!idVen) return;
-
-    const nombreVendedor = vendedor.options[vendedor.selectedIndex].text;
-    const misClientes = clientesDelVendedor(idVen);
-
-    if (misClientes.length === 0) {
-        alert("No se encontraron clientes para este vendedor.");
-        return;
-    }
-
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({
-    orientation: "landscape",
-    unit: "mm",
-    format: "legal"
-});
-
-    const columnas = [
-        "DNI", "Nombre", "Perfil", "ODV", "Teléfono 1", "Teléfono 2",
-        "MAF Electro", "MAF Moto", "Producto","Distrito","Dirección"
-    ];
-
-    const filas = misClientes.map(c => [
-        clean(c.DNI),
-        clean(c.NOMBRE),
-        clean(c["PERFIL 2"]),
-        clean(c.ODV),
-        clean(c.CET),
-        clean(c.CEL1),
-        clean(c.MAF_TEORICO_ELECTRO),
-        clean(c.MAF_TEORICO_MOTO),
-        clean(c.PRODUCTO_INTERNO),
-        clean(c.LOCACION),
-        clean(c.DIRECCION)
-    ]);
-
-    doc.autoTable({
-    startY: 26,
-
-    margin: {
-        top: 26
-    },
-
-    showHead: "everyPage",
-
-    head: [columnas],
-    body: filas,
-
-    theme: "grid",
-
-   styles: {
-    fontSize: 6.5,
-    cellPadding: 2,
-    overflow: "linebreak",
-    valign: "middle"
-},
-
-headStyles: {
-    fillColor: [229, 28, 34],
-    textColor: 255,
-    fontStyle: "bold",
-    halign: "center",
-    valign: "middle"
-},
-
-    columnStyles: {
-        0: { cellWidth: 25 },   // DNI
-        1: { cellWidth: 45 },   // Nombre
-        2: { cellWidth: 12 },   // Perfil
-        3: { cellWidth: 18 },   // ODV
-        4: { cellWidth: 20 },   // Teléfono 1
-        5: { cellWidth: 20 },   // Teléfono 2
-        6: { cellWidth: 18 },   // MAF Electro
-        7: { cellWidth: 18 },   // MAF Moto
-        8: { cellWidth: 30 },   // Producto
-        9: { cellWidth: 20 },   // Distrito
-        10: {                   // Dirección
-            cellWidth: 95,
-            overflow: "linebreak"
+        if (!response.ok) {
+            throw new Error('No se pudo consultar el maestro');
         }
-    },
 
-    didDrawPage: function (data) {
+        const data = await response.json();
 
-    if (data.pageNumber === 1) {
-        doc.setFontSize(14);
-        doc.text(`Lista de Clientes - ${nombreVendedor}`, 14, 15);
+        if (!Array.isArray(data)) {
+            throw new Error('Respuesta inválida del servidor');
+        }
 
-        doc.setFontSize(10);
-        doc.text(`Fecha de generación: ${new Date().toLocaleString()}`, 14, 21);
+        preguntas = data;
+
+        renderizarPreguntas();
+
+    } catch (error) {
+        contenedor.innerHTML = `
+            <div class="question-card">
+                <div class="message error" style="display:block">
+                    No se pudieron cargar las preguntas.
+                    Verifique la URL del Web App de Apps Script.
+                </div>
+            </div>
+        `;
     }
-
-    const totalPaginas = doc.internal.getNumberOfPages();
-
-    doc.setFontSize(9);
-    doc.text(
-        `Página ${data.pageNumber} de ${totalPaginas}`,
-        doc.internal.pageSize.getWidth() - 35,
-        doc.internal.pageSize.getHeight() - 8
-    );
 }
-});
 
-    doc.save(`Clientes_${nombreVendedor.replace(/\s+/g, "_")}.pdf`);
-    pdfDescargado = true;
-};
+function renderizarPreguntas() {
+    const contenedor = document.getElementById('contenedorPreguntas');
 
-tipo_doc.onchange = () =>
-    tipo_doc_otro.style.display = tipo_doc.value === "Otro" ? "block" : "none";
-
-
-form.onsubmit = async (e) => {
-
-    e.preventDefault();
-
-    if (
-        !region.value ||
-        !tienda.value ||
-        !vendedor.value ||
-        !tipo_doc.value ||
-        !num_doc.value.trim() ||
-        !base.value ||
-        !gestion.value ||
-        !resultado.value
-    ) {
-        alert("Complete todos los campos");
+    if (!preguntas.length) {
+        contenedor.innerHTML = `
+            <div class="question-card">
+                <div class="empty">
+                    No existen preguntas activas.
+                </div>
+            </div>
+        `;
         return;
     }
 
-    if (
-        tipo_doc.value === "Otro" &&
-        !tipo_doc_otro.value.trim()
-    ) {
-        alert("Especifique el tipo de documento");
-        tipo_doc_otro.focus();
-        return;
-    }
+    contenedor.innerHTML = '';
 
-    const v = datos.find(
-        x => clean(x.ID_VEN) == clean(vendedor.value)
-    );
+    preguntas.forEach(function(pregunta, index) {
 
-    if (!v) {
-        alert("Vendedor no válido");
-        return;
-    }
+        const card = document.createElement('div');
+        card.className = 'question-card';
 
-    btn.disabled = true;
+        const numero = document.createElement('div');
+        numero.className = 'question-number';
+        numero.textContent = index + 1;
 
-    btn.innerHTML =
-        '<i class="bi bi-arrow-repeat"></i> Enviando...';
-    
-    const payload = {
+        const titulo = document.createElement('div');
+        titulo.className = 'question-title';
+        titulo.innerHTML =
+            escaparHTML(pregunta.PREGUNTA) +
+            ' <span class="required">*</span>';
 
-        REG: clean(v.REG),
+        const opciones = document.createElement('div');
+        opciones.className = 'options';
 
-        TIENDA: clean(v.TIENDA),
+        pregunta.RESPUESTAS.forEach(function(respuesta, respuestaIndex) {
 
-        VENDEDOR: clean(v.VENDEDOR),
+            const option = document.createElement('div');
+            option.className = 'option';
 
-        ID_VEN: clean(v.ID_VEN),
+            const idRadio =
+                'pregunta_' +
+                pregunta.ID_PREGUNTA +
+                '_' +
+                respuestaIndex;
 
-        TIPO_DOCUMENTO:
-            tipo_doc.value === "Otro"
-                ? tipo_doc_otro.value.trim()
-                : tipo_doc.value,
+            option.innerHTML = `
+                <input
+                    type="radio"
+                    id="${idRadio}"
+                    name="pregunta_${pregunta.ID_PREGUNTA}"
+                    value="${escaparHTML(respuesta.ID_RESPUESTA)}"
+                    data-id-pregunta="${escaparHTML(pregunta.ID_PREGUNTA)}"
+                    required
+                >
 
-        NUMERO_DOCUMENTO:
-            num_doc.value.trim(),
+                <label for="${idRadio}">
+                    ${escaparHTML(respuesta.RESPUESTA)}
+                </label>
+            `;
 
-        BASE_CLIENTE:
-            base.value,
-
-        TIPO_GESTION:
-            gestion.value === "Otro"
-                ? gestion_otro.value.trim()
-                : gestion.value,
-
-        RESULTADO:
-            resultado.value === "Otro"
-                ? resultado_otro.value.trim()
-                : resultado.value,
-
-        DESCARGO_PDF:
-            pdfDescargado ? "SI" : "NO"
-    };
-
-
-    console.log("Enviando gestión:", payload);
-
-
-    try {
-
-        await fetch(API, {
-
-            method: "POST",
-
-            mode: "no-cors",
-
-            body: new URLSearchParams(payload)
-
+            opciones.appendChild(option);
         });
 
+        card.appendChild(numero);
+        card.appendChild(titulo);
+        card.appendChild(opciones);
 
-        console.log("Solicitud enviada correctamente");
+        contenedor.appendChild(card);
+    });
+}
 
-        mostrarExito();
+document
+    .getElementById('formulario')
+    .addEventListener('submit', async function(event) {
 
-        resetForm();
+        event.preventDefault();
 
+        ocultarMensaje();
 
-    } catch (err) {
+        const boton = document.getElementById('btnGuardar');
 
-        console.error(
-            "Error enviando gestión:",
-            err
-        );
+        if (!this.checkValidity()) {
+            this.reportValidity();
+            return;
+        }
 
-        alert(
-            "Error al guardar. Intente nuevamente."
-        );
+        const respuestas = [];
 
-    } finally {
+        for (const pregunta of preguntas) {
 
-        btn.disabled = false;
+            const seleccionada = document.querySelector(
+                `input[name="pregunta_${pregunta.ID_PREGUNTA}"]:checked`
+            );
 
-        btn.innerText =
-            "Guardar Gestión";
+            if (!seleccionada) {
+                mostrarMensaje(
+                    'Debe responder todas las preguntas.',
+                    'error'
+                );
 
+                document
+                    .querySelector(
+                        `input[name="pregunta_${pregunta.ID_PREGUNTA}"]`
+                    )
+                    ?.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+
+                return;
+            }
+
+            respuestas.push({
+                ID_PREGUNTA: pregunta.ID_PREGUNTA,
+                ID_RESPUESTA: seleccionada.value
+            });
+        }
+
+        const payload = {
+            CODIGO_TIENDA:
+                document.getElementById('codigoTienda').value.trim(),
+
+            DNI_FUNCIONARIO:
+                document.getElementById('dniFuncionario').value.trim(),
+
+            TIPO_DOC_CLIENTE:
+                document.getElementById('tipoDocCliente').value.trim(),
+
+            DNI_CLIENTE:
+                document.getElementById('dniCliente').value.trim(),
+
+            RESPUESTAS: respuestas
+        };
+
+        boton.disabled = true;
+        boton.textContent = 'Registrando...';
+
+        try {
+
+            await fetch(API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            mostrarMensaje(
+                'Registro guardado correctamente.',
+                'success'
+            );
+
+            limpiarFormulario(false);
+
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+
+        } catch (error) {
+
+            mostrarMensaje(
+                'No se pudo enviar el registro. Intente nuevamente.',
+                'error'
+            );
+
+        } finally {
+
+            boton.disabled = false;
+            boton.textContent = 'Registrar';
+        }
+    });
+
+function limpiarFormulario(mostrar = true) {
+
+    document
+        .getElementById('formulario')
+        .reset();
+
+    document
+        .querySelectorAll('input[type="radio"]')
+        .forEach(function(input) {
+            input.checked = false;
+        });
+
+    if (mostrar) {
+        ocultarMensaje();
     }
-};
+}
+
+function mostrarMensaje(texto, tipo) {
+
+    const mensaje = document.getElementById('mensaje');
+
+    mensaje.textContent = texto;
+    mensaje.className = 'message ' + tipo;
+}
+
+function ocultarMensaje() {
+
+    const mensaje = document.getElementById('mensaje');
+
+    mensaje.textContent = '';
+    mensaje.className = 'message';
+}
+
+function escaparHTML(valor) {
+
+    return String(valor)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
 </script>
 
 </body>
