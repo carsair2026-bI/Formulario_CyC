@@ -3,141 +3,199 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Registro de Gestión Comercial</title>
 
+<link rel="icon" type="image/png" href="./icon.png">
+
 <style>
+
 * {
     box-sizing: border-box;
 }
 
+html,
 body {
     margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
     font-family: Arial, Helvetica, sans-serif;
     background: #f4f5f7;
-    color: #333;
+    color: #202124;
+}
+
+body {
+    overflow-x: hidden;
 }
 
 .header {
-    background: #e51c22;
-    color: white;
-    padding: 18px 25px;
-    box-shadow: 0 3px 10px rgba(0,0,0,.15);
+    width: 100%;
+    height: 105px;
+    background: #ed1c24;
+    box-shadow: 0 4px 12px rgba(0,0,0,.18);
+    display: flex;
+    align-items: center;
 }
 
 .header-content {
-    max-width: 1100px;
+    width: 100%;
+    max-width: 1400px;
     margin: auto;
+    padding: 0 32px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
 }
 
 .logo {
-    font-size: 28px;
-    font-weight: 800;
+    height: 48px;
+    width: auto;
+    max-width: 220px;
+    object-fit: contain;
 }
 
 .header-title {
-    font-size: 20px;
-    font-weight: 600;
+    color: #fff;
+    font-size: 29px;
+    font-weight: 700;
+    text-align: right;
 }
 
 .container {
-    max-width: 1100px;
-    margin: 30px auto;
-    padding: 0 18px 40px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 38px auto;
+    padding: 0 28px 50px;
+}
+
+.message {
+    width: 100%;
+    padding: 18px 24px;
+    margin-bottom: 28px;
+    border-radius: 14px;
+    font-size: 17px;
+    font-weight: 700;
+    display: none;
+}
+
+.message.success {
+    display: block;
+    background: #edf9f0;
+    border: 1px solid #b8e0c1;
+    color: #187333;
+}
+
+.message.error {
+    display: block;
+    background: #fff0f1;
+    border: 1px solid #f2b9bc;
+    color: #c81920;
 }
 
 .card {
-    background: white;
-    border-radius: 16px;
-    padding: 25px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,.08);
+    width: 100%;
+    background: #fff;
+    border-radius: 22px;
+    padding: 34px;
+    margin-bottom: 28px;
+    box-shadow: 0 6px 22px rgba(0,0,0,.08);
 }
 
 .card-title {
-    margin: 0 0 20px;
-    font-size: 19px;
+    margin: 0 0 27px;
+    font-size: 27px;
+    line-height: 1.2;
     font-weight: 700;
+    color: #202124;
 }
 
 .grid {
+    width: 100%;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 25px;
+    row-gap: 22px;
 }
 
 .field {
+    width: 100%;
     display: flex;
     flex-direction: column;
 }
 
 .field label {
-    font-size: 14px;
+    font-size: 18px;
     font-weight: 700;
-    margin-bottom: 7px;
+    margin-bottom: 10px;
+    color: #202124;
+}
+
+.required {
+    color: #ed1c24;
 }
 
 .field input,
 .field select {
     width: 100%;
-    height: 46px;
-    border: 1px solid #d8d8d8;
-    border-radius: 9px;
-    padding: 0 13px;
-    font-size: 14px;
+    height: 62px;
+    border: 1px solid #d9d9d9;
+    border-radius: 13px;
+    background: #fff;
+    padding: 0 20px;
+    font-size: 18px;
+    color: #161616;
     outline: none;
-    background: white;
+    transition: all .2s ease;
 }
 
 .field input:focus,
 .field select:focus {
-    border-color: #e51c22;
-    box-shadow: 0 0 0 3px rgba(229,28,34,.10);
+    border-color: #ed1c24;
+    box-shadow: 0 0 0 3px rgba(237,28,36,.10);
 }
 
 .field select:disabled {
-    background: #f1f1f1;
-    color: #999;
+    background: #f4f4f4;
+    color: #b6b6b6;
     cursor: not-allowed;
 }
 
 .question-card {
-    background: white;
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 18px;
-    box-shadow: 0 4px 15px rgba(0,0,0,.07);
+    width: 100%;
+    background: #fff;
+    border-radius: 22px;
+    padding: 34px;
+    margin-bottom: 28px;
+    box-shadow: 0 6px 22px rgba(0,0,0,.08);
 }
 
 .question-number {
-    display: inline-flex;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #ed1c24;
+    color: white;
+    display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 34px;
-    height: 34px;
-    padding: 0 10px;
-    border-radius: 50px;
-    background: #e51c22;
-    color: white;
+    font-size: 17px;
     font-weight: 700;
-    font-size: 14px;
-    margin-bottom: 12px;
+    margin-bottom: 15px;
 }
 
 .question-title {
-    font-size: 17px;
+    font-size: 20px;
+    line-height: 1.45;
     font-weight: 700;
-    margin-bottom: 17px;
-    line-height: 1.4;
+    color: #202124;
+    margin-bottom: 20px;
 }
 
 .options {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
 }
 
 .option {
@@ -151,58 +209,74 @@ body {
 }
 
 .option label {
+    min-height: 60px;
+    width: 100%;
     display: flex;
     align-items: center;
-    min-height: 48px;
-    padding: 11px 14px;
-    border: 1px solid #ddd;
-    border-radius: 9px;
+    padding: 13px 17px;
+    border: 1px solid #d8d8d8;
+    border-radius: 12px;
+    background: #fff;
     cursor: pointer;
-    font-size: 14px;
-    line-height: 1.35;
-    transition: .2s;
+    font-size: 16px;
+    line-height: 1.4;
+    transition: all .2s ease;
 }
 
 .option label:hover {
-    border-color: #e51c22;
+    border-color: #ed1c24;
     background: #fff7f7;
 }
 
 .option input:checked + label {
-    border-color: #e51c22;
-    background: #ffecee;
-    color: #b9151a;
+    border-color: #ed1c24;
+    background: #fff0f1;
+    color: #c71920;
     font-weight: 700;
+    box-shadow: 0 0 0 1px #ed1c24;
 }
 
-.required {
-    color: #e51c22;
+.loading {
+    width: 100%;
+    text-align: center;
+    padding: 50px;
+    font-size: 18px;
+    color: #777;
+}
+
+.empty {
+    width: 100%;
+    text-align: center;
+    padding: 35px;
+    color: #777;
+    font-size: 17px;
 }
 
 .actions {
+    width: 100%;
     display: flex;
     justify-content: flex-end;
-    gap: 12px;
-    margin-top: 25px;
+    gap: 14px;
 }
 
 .btn {
-    border: 0;
-    border-radius: 9px;
-    height: 48px;
-    padding: 0 28px;
-    font-size: 15px;
+    height: 58px;
+    padding: 0 34px;
+    border: none;
+    border-radius: 12px;
+    font-size: 17px;
     font-weight: 700;
     cursor: pointer;
+    transition: all .2s ease;
 }
 
 .btn-primary {
-    background: #e51c22;
-    color: white;
+    background: #ed1c24;
+    color: #fff;
 }
 
 .btn-primary:hover {
-    background: #c9151b;
+    background: #cf151c;
 }
 
 .btn-primary:disabled {
@@ -211,59 +285,79 @@ body {
 }
 
 .btn-secondary {
-    background: #e9e9e9;
-    color: #444;
+    background: #eeeeee;
+    color: #333;
 }
 
-.loading {
-    text-align: center;
-    padding: 40px 20px;
-    color: #666;
+.btn-secondary:hover {
+    background: #dedede;
 }
 
-.message {
-    display: none;
-    padding: 15px 18px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    font-size: 14px;
-    font-weight: 600;
-}
+@media (max-width: 900px) {
 
-.message.success {
-    display: block;
-    background: #e9f8ed;
-    color: #197333;
-    border: 1px solid #b9e4c3;
-}
-
-.message.error {
-    display: block;
-    background: #fff0f0;
-    color: #c4161c;
-    border: 1px solid #f0b9bb;
-}
-
-.empty {
-    text-align: center;
-    padding: 30px;
-    color: #777;
-}
-
-@media (max-width: 700px) {
-    .header-content {
-        flex-direction: column;
-        align-items: flex-start;
+    .header {
+        height: auto;
+        min-height: 95px;
     }
 
-    .grid,
+    .header-content {
+        padding: 18px 24px;
+        gap: 15px;
+    }
+
+    .header-title {
+        font-size: 21px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
     .options {
         grid-template-columns: 1fr;
     }
 
     .card,
     .question-card {
-        padding: 18px;
+        padding: 25px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-title {
+        text-align: left;
+        font-size: 19px;
+    }
+
+    .container {
+        padding: 0 14px 35px;
+        margin-top: 20px;
+    }
+
+    .card,
+    .question-card {
+        border-radius: 16px;
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 23px;
+    }
+
+    .field label {
+        font-size: 16px;
+    }
+
+    .field input,
+    .field select {
+        height: 56px;
+        font-size: 16px;
     }
 
     .actions {
@@ -274,53 +368,89 @@ body {
         width: 100%;
     }
 }
+
 </style>
 </head>
 
 <body>
 
 <header class="header">
+
     <div class="header-content">
-        <div class="logo">CARSA</div>
-        <div class="header-title">Registro de Gestión Comercial</div>
+
+        <img
+            src="./logo.png"
+            class="logo"
+            alt="Carsa"
+        >
+
+        <div class="header-title">
+            Registro de Gestión Comercial
+        </div>
+
     </div>
+
 </header>
 
 <main class="container">
 
-    <div id="mensaje" class="message"></div>
+    <div
+        id="mensaje"
+        class="message"
+    ></div>
 
     <form id="formulario">
 
         <div class="card">
 
-            <h2 class="card-title">Datos del registro</h2>
+            <h2 class="card-title">
+                Datos del registro
+            </h2>
 
             <div class="grid">
 
                 <div class="field">
+
                     <label for="region">
-                        Región <span class="required">*</span>
+                        Región
+                        <span class="required">*</span>
                     </label>
 
-                    <select id="region" required>
-                        <option value="">Seleccione región</option>
+                    <select
+                        id="region"
+                        required
+                    >
+                        <option value="">
+                            Seleccione región
+                        </option>
                     </select>
+
                 </div>
 
                 <div class="field">
+
                     <label for="codigoTienda">
-                        Tienda <span class="required">*</span>
+                        Tienda
+                        <span class="required">*</span>
                     </label>
 
-                    <select id="codigoTienda" required disabled>
-                        <option value="">Seleccione tienda</option>
+                    <select
+                        id="codigoTienda"
+                        required
+                        disabled
+                    >
+                        <option value="">
+                            Seleccione tienda
+                        </option>
                     </select>
+
                 </div>
 
                 <div class="field">
+
                     <label for="dniFuncionario">
-                        DNI funcionario <span class="required">*</span>
+                        DNI funcionario
+                        <span class="required">*</span>
                     </label>
 
                     <input
@@ -330,30 +460,62 @@ body {
                         autocomplete="off"
                         required
                     >
+
                 </div>
 
                 <div class="field">
+
                     <label for="dniCliente">
-                        Código de cliente <span class="required">*</span>
+                        Código de cliente
+                        <span class="required">*</span>
                     </label>
 
-                    <select id="dniCliente" required disabled>
-                        <option value="">Seleccione cliente</option>
+                    <select
+                        id="dniCliente"
+                        required
+                        disabled
+                    >
+                        <option value="">
+                            Seleccione cliente
+                        </option>
                     </select>
+
                 </div>
 
                 <div class="field">
+
                     <label for="tipoDocCliente">
-                        Tipo documento cliente <span class="required">*</span>
+                        Tipo documento cliente
+                        <span class="required">*</span>
                     </label>
 
-                    <select id="tipoDocCliente" required>
-                        <option value="">Seleccione</option>
-                        <option value="DNI">DNI</option>
-                        <option value="CE">CE</option>
-                        <option value="PASAPORTE">PASAPORTE</option>
-                        <option value="OTRO">OTRO</option>
+                    <select
+                        id="tipoDocCliente"
+                        required
+                    >
+
+                        <option value="">
+                            Seleccione
+                        </option>
+
+                        <option value="DNI">
+                            DNI
+                        </option>
+
+                        <option value="CE">
+                            CE
+                        </option>
+
+                        <option value="PASAPORTE">
+                            PASAPORTE
+                        </option>
+
+                        <option value="OTRO">
+                            OTRO
+                        </option>
+
                     </select>
+
                 </div>
 
             </div>
@@ -361,9 +523,15 @@ body {
         </div>
 
         <div id="contenedorPreguntas">
-            <div class="loading">
-                Cargando preguntas...
+
+            <div class="question-card">
+
+                <div class="loading">
+                    Cargando preguntas...
+                </div>
+
             </div>
+
         </div>
 
         <div class="card">
@@ -396,7 +564,8 @@ body {
 
 <script>
 
-const API_URL = 'AKfycbxjuKy636oJTr1HSD--BqYSpMYy5oeqiNUL_sbnXeJNTuAvAokPSnqvJuQiKSSbe2HeMA';
+const API_URL =
+    'PEGAR_AQUI_URL_DE_TU_WEB_APP';
 
 let preguntas = [];
 
@@ -406,63 +575,220 @@ let maestro = {
     CLIENTES: {}
 };
 
+let cargasPendientes = 0;
+
 document.addEventListener(
     'DOMContentLoaded',
     iniciar
 );
 
-async function iniciar() {
+function iniciar() {
 
-    try {
+    cargasPendientes = 2;
 
-        await Promise.all([
-            cargarMaestro(),
-            cargarPreguntas()
-        ]);
+    cargarMaestroJSONP();
 
-    } catch (error) {
-
-        mostrarMensaje(
-            'No se pudo cargar la información inicial.',
-            'error'
-        );
-    }
+    cargarPreguntasJSONP();
 }
 
-async function cargarMaestro() {
+function cargarMaestroJSONP() {
 
-    const response = await fetch(
-        API_URL + '?action=maestro'
+    ejecutarJSONP(
+        'maestro',
+        function(resultado) {
+
+            cargasPendientes--;
+
+            if (
+                !resultado ||
+                resultado.ok !== true
+            ) {
+                mostrarMensaje(
+                    resultado?.mensaje ||
+                    'No se pudo cargar la información inicial.',
+                    'error'
+                );
+                return;
+            }
+
+            maestro = resultado.data;
+
+            cargarRegiones();
+
+        },
+        function() {
+
+            cargasPendientes--;
+
+            mostrarMensaje(
+                'No se pudo cargar la información inicial.',
+                'error'
+            );
+        }
     );
+}
 
-    if (!response.ok) {
-        throw new Error(
-            'No se pudo cargar el maestro'
+function cargarPreguntasJSONP() {
+
+    ejecutarJSONP(
+        'preguntas',
+        function(resultado) {
+
+            cargasPendientes--;
+
+            const contenedor =
+                document.getElementById(
+                    'contenedorPreguntas'
+                );
+
+            if (
+                !resultado ||
+                resultado.ok !== true
+            ) {
+
+                contenedor.innerHTML = `
+                    <div class="question-card">
+                        <div class="message error" style="display:block">
+                            ${
+                                resultado?.mensaje ||
+                                'No se pudieron cargar las preguntas.'
+                            }
+                        </div>
+                    </div>
+                `;
+
+                return;
+            }
+
+            preguntas = resultado.data || [];
+
+            renderizarPreguntas();
+
+        },
+        function() {
+
+            cargasPendientes--;
+
+            document.getElementById(
+                'contenedorPreguntas'
+            ).innerHTML = `
+                <div class="question-card">
+                    <div class="message error" style="display:block">
+                        No se pudieron cargar las preguntas.
+                    </div>
+                </div>
+            `;
+        }
+    );
+}
+
+function ejecutarJSONP(
+    action,
+    success,
+    error
+) {
+
+    const callbackName =
+        'jsonp_' +
+        Date.now() +
+        '_' +
+        Math.floor(
+            Math.random() * 100000
         );
+
+    const script =
+        document.createElement('script');
+
+    const timeout =
+        setTimeout(function() {
+
+            limpiar();
+
+            if (error) {
+                error();
+            }
+
+        }, 20000);
+
+    function limpiar() {
+
+        clearTimeout(timeout);
+
+        if (script.parentNode) {
+            script.parentNode.removeChild(
+                script
+            );
+        }
+
+        try {
+            delete window[
+                callbackName
+            ];
+        } catch (e) {
+            window[
+                callbackName
+            ] = undefined;
+        }
     }
 
-    maestro = await response.json();
+    window[callbackName] =
+        function(data) {
 
-    cargarRegiones();
+            limpiar();
+
+            success(data);
+        };
+
+    script.src =
+        API_URL +
+        '?action=' +
+        encodeURIComponent(action) +
+        '&callback=' +
+        encodeURIComponent(callbackName) +
+        '&t=' +
+        Date.now();
+
+    script.onerror =
+        function() {
+
+            limpiar();
+
+            if (error) {
+                error();
+            }
+        };
+
+    document.body.appendChild(
+        script
+    );
 }
 
 function cargarRegiones() {
 
-    const select = document.getElementById('region');
+    const select =
+        document.getElementById(
+            'region'
+        );
 
     select.innerHTML =
         '<option value="">Seleccione región</option>';
 
-    maestro.REGIONES.forEach(function(region) {
+    maestro.REGIONES.forEach(
+        function(region) {
 
-        const option =
-            document.createElement('option');
+            const option =
+                document.createElement(
+                    'option'
+                );
 
-        option.value = region;
-        option.textContent = region;
+            option.value = region;
+            option.textContent = region;
 
-        select.appendChild(option);
-    });
+            select.appendChild(
+                option
+            );
+        }
+    );
 }
 
 document
@@ -475,13 +801,19 @@ document
 function cargarTiendas() {
 
     const region =
-        document.getElementById('region').value;
+        document.getElementById(
+            'region'
+        ).value;
 
     const tienda =
-        document.getElementById('codigoTienda');
+        document.getElementById(
+            'codigoTienda'
+        );
 
     const cliente =
-        document.getElementById('dniCliente');
+        document.getElementById(
+            'dniCliente'
+        );
 
     tienda.innerHTML =
         '<option value="">Seleccione tienda</option>';
@@ -489,29 +821,35 @@ function cargarTiendas() {
     cliente.innerHTML =
         '<option value="">Seleccione cliente</option>';
 
+    tienda.disabled = true;
     cliente.disabled = true;
 
     if (!region) {
-
-        tienda.disabled = true;
         return;
     }
 
     const tiendas =
         maestro.TIENDAS[region] || [];
 
-    tiendas.forEach(function(nombre) {
+    tiendas.forEach(
+        function(nombre) {
 
-        const option =
-            document.createElement('option');
+            const option =
+                document.createElement(
+                    'option'
+                );
 
-        option.value = nombre;
-        option.textContent = nombre;
+            option.value = nombre;
+            option.textContent = nombre;
 
-        tienda.appendChild(option);
-    });
+            tienda.appendChild(
+                option
+            );
+        }
+    );
 
-    tienda.disabled = false;
+    tienda.disabled =
+        tiendas.length === 0;
 }
 
 document
@@ -524,75 +862,46 @@ document
 function cargarClientes() {
 
     const tienda =
-        document.getElementById('codigoTienda').value;
+        document.getElementById(
+            'codigoTienda'
+        ).value;
 
     const cliente =
-        document.getElementById('dniCliente');
+        document.getElementById(
+            'dniCliente'
+        );
 
     cliente.innerHTML =
         '<option value="">Seleccione cliente</option>';
 
-    if (!tienda) {
+    cliente.disabled = true;
 
-        cliente.disabled = true;
+    if (!tienda) {
         return;
     }
 
     const clientes =
         maestro.CLIENTES[tienda] || [];
 
-    clientes.forEach(function(codigo) {
+    clientes.forEach(
+        function(codigo) {
 
-        const option =
-            document.createElement('option');
+            const option =
+                document.createElement(
+                    'option'
+                );
 
-        option.value = codigo;
-        option.textContent = codigo;
+            option.value = codigo;
+            option.textContent = codigo;
 
-        cliente.appendChild(option);
-    });
-
-    cliente.disabled = false;
-}
-
-async function cargarPreguntas() {
-
-    const contenedor =
-        document.getElementById(
-            'contenedorPreguntas'
-        );
-
-    try {
-
-        const response = await fetch(
-            API_URL + '?action=preguntas'
-        );
-
-        if (!response.ok) {
-            throw new Error(
-                'No se pudo consultar el maestro'
+            cliente.appendChild(
+                option
             );
         }
+    );
 
-        const data =
-            await response.json();
-
-        preguntas = data;
-
-        renderizarPreguntas();
-
-    } catch (error) {
-
-        contenedor.innerHTML = `
-            <div class="question-card">
-                <div class="message error" style="display:block">
-                    No se pudieron cargar las preguntas.
-                </div>
-            </div>
-        `;
-
-        throw error;
-    }
+    cliente.disabled =
+        clientes.length === 0;
 }
 
 function renderizarPreguntas() {
@@ -617,220 +926,265 @@ function renderizarPreguntas() {
 
     contenedor.innerHTML = '';
 
-    preguntas.forEach(function(
-        pregunta,
-        index
-    ) {
+    preguntas.forEach(
+        function(
+            pregunta,
+            index
+        ) {
 
-        const card =
-            document.createElement('div');
+            const card =
+                document.createElement(
+                    'div'
+                );
 
-        card.className =
-            'question-card';
+            card.className =
+                'question-card';
 
-        const numero =
-            document.createElement('div');
+            const numero =
+                document.createElement(
+                    'div'
+                );
 
-        numero.className =
-            'question-number';
+            numero.className =
+                'question-number';
 
-        numero.textContent =
-            index + 1;
+            numero.textContent =
+                index + 1;
 
-        const titulo =
-            document.createElement('div');
+            const titulo =
+                document.createElement(
+                    'div'
+                );
 
-        titulo.className =
-            'question-title';
+            titulo.className =
+                'question-title';
 
-        titulo.innerHTML =
-            escaparHTML(
-                pregunta.PREGUNTA
-            ) +
-            ' <span class="required">*</span>';
+            titulo.innerHTML =
+                escaparHTML(
+                    pregunta.PREGUNTA
+                ) +
+                ' <span class="required">*</span>';
 
-        const opciones =
-            document.createElement('div');
+            const opciones =
+                document.createElement(
+                    'div'
+                );
 
-        opciones.className =
-            'options';
+            opciones.className =
+                'options';
 
-        pregunta.RESPUESTAS.forEach(
-            function(
-                respuesta,
-                respuestaIndex
-            ) {
+            pregunta.RESPUESTAS.forEach(
+                function(
+                    respuesta,
+                    respuestaIndex
+                ) {
 
-                const option =
-                    document.createElement('div');
+                    const option =
+                        document.createElement(
+                            'div'
+                        );
 
-                option.className =
-                    'option';
+                    option.className =
+                        'option';
 
-                const idRadio =
-                    'pregunta_' +
-                    pregunta.ID_PREGUNTA +
-                    '_' +
-                    respuestaIndex;
+                    const idRadio =
+                        'pregunta_' +
+                        pregunta.ID_PREGUNTA +
+                        '_' +
+                        respuestaIndex;
 
-                option.innerHTML = `
-                    <input
-                        type="radio"
-                        id="${idRadio}"
-                        name="pregunta_${pregunta.ID_PREGUNTA}"
-                        value="${escaparHTML(respuesta.ID_RESPUESTA)}"
-                        required
-                    >
+                    option.innerHTML = `
+                        <input
+                            type="radio"
+                            id="${idRadio}"
+                            name="pregunta_${pregunta.ID_PREGUNTA}"
+                            value="${escaparHTML(respuesta.ID_RESPUESTA)}"
+                            required
+                        >
 
-                    <label for="${idRadio}">
-                        ${escaparHTML(respuesta.RESPUESTA)}
-                    </label>
-                `;
+                        <label for="${idRadio}">
+                            ${escaparHTML(respuesta.RESPUESTA)}
+                        </label>
+                    `;
 
-                opciones.appendChild(option);
-            }
-        );
+                    opciones.appendChild(
+                        option
+                    );
+                }
+            );
 
-        card.appendChild(numero);
-        card.appendChild(titulo);
-        card.appendChild(opciones);
+            card.appendChild(
+                numero
+            );
 
-        contenedor.appendChild(card);
-    });
+            card.appendChild(
+                titulo
+            );
+
+            card.appendChild(
+                opciones
+            );
+
+            contenedor.appendChild(
+                card
+            );
+        }
+    );
 }
 
 document
     .getElementById('formulario')
     .addEventListener(
         'submit',
-        async function(event) {
-
-            event.preventDefault();
-
-            ocultarMensaje();
-
-            if (!this.checkValidity()) {
-
-                this.reportValidity();
-
-                return;
-            }
-
-            const respuestas = [];
-
-            for (const pregunta of preguntas) {
-
-                const seleccionada =
-                    document.querySelector(
-                        `input[name="pregunta_${pregunta.ID_PREGUNTA}"]:checked`
-                    );
-
-                if (!seleccionada) {
-
-                    mostrarMensaje(
-                        'Debe responder todas las preguntas.',
-                        'error'
-                    );
-
-                    return;
-                }
-
-                respuestas.push({
-                    ID_PREGUNTA:
-                        pregunta.ID_PREGUNTA,
-
-                    ID_RESPUESTA:
-                        seleccionada.value
-                });
-            }
-
-            const payload = {
-
-                REGION:
-                    document.getElementById(
-                        'region'
-                    ).value,
-
-                CODIGO_TIENDA:
-                    document.getElementById(
-                        'codigoTienda'
-                    ).value,
-
-                DNI_FUNCIONARIO:
-                    document.getElementById(
-                        'dniFuncionario'
-                    ).value.trim(),
-
-                TIPO_DOC_CLIENTE:
-                    document.getElementById(
-                        'tipoDocCliente'
-                    ).value,
-
-                DNI_CLIENTE:
-                    document.getElementById(
-                        'dniCliente'
-                    ).value,
-
-                RESPUESTAS:
-                    respuestas
-            };
-
-            const boton =
-                document.getElementById(
-                    'btnGuardar'
-                );
-
-            boton.disabled = true;
-            boton.textContent =
-                'Registrando...';
-
-            try {
-
-                await fetch(API_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type':
-                            'text/plain;charset=utf-8'
-                    },
-                    body:
-                        JSON.stringify(payload)
-                });
-
-                mostrarMensaje(
-                    'Registro guardado correctamente.',
-                    'success'
-                );
-
-                limpiarFormulario(false);
-
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-
-            } catch (error) {
-
-                mostrarMensaje(
-                    'No se pudo enviar el registro.',
-                    'error'
-                );
-
-            } finally {
-
-                boton.disabled = false;
-                boton.textContent =
-                    'Registrar';
-            }
-        }
+        enviarFormulario
     );
+
+async function enviarFormulario(
+    event
+) {
+
+    event.preventDefault();
+
+    ocultarMensaje();
+
+    const formulario =
+        document.getElementById(
+            'formulario'
+        );
+
+    if (!formulario.checkValidity()) {
+
+        formulario.reportValidity();
+
+        return;
+    }
+
+    const respuestas = [];
+
+    for (
+        const pregunta of preguntas
+    ) {
+
+        const seleccionada =
+            document.querySelector(
+                `input[name="pregunta_${pregunta.ID_PREGUNTA}"]:checked`
+            );
+
+        if (!seleccionada) {
+
+            mostrarMensaje(
+                'Debe responder todas las preguntas.',
+                'error'
+            );
+
+            return;
+        }
+
+        respuestas.push({
+            ID_PREGUNTA:
+                pregunta.ID_PREGUNTA,
+
+            ID_RESPUESTA:
+                seleccionada.value
+        });
+    }
+
+    const payload = {
+
+        REGION:
+            document.getElementById(
+                'region'
+            ).value,
+
+        CODIGO_TIENDA:
+            document.getElementById(
+                'codigoTienda'
+            ).value,
+
+        DNI_FUNCIONARIO:
+            document.getElementById(
+                'dniFuncionario'
+            ).value.trim(),
+
+        TIPO_DOC_CLIENTE:
+            document.getElementById(
+                'tipoDocCliente'
+            ).value,
+
+        DNI_CLIENTE:
+            document.getElementById(
+                'dniCliente'
+            ).value,
+
+        RESPUESTAS:
+            respuestas
+    };
+
+    const boton =
+        document.getElementById(
+            'btnGuardar'
+        );
+
+    boton.disabled = true;
+    boton.textContent =
+        'Registrando...';
+
+    try {
+
+        await fetch(
+            API_URL,
+            {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type':
+                        'text/plain;charset=utf-8'
+                },
+                body:
+                    JSON.stringify(
+                        payload
+                    )
+            }
+        );
+
+        mostrarMensaje(
+            'Registro guardado correctamente.',
+            'success'
+        );
+
+        limpiarFormulario(
+            false
+        );
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+
+    } catch (error) {
+
+        mostrarMensaje(
+            'No se pudo enviar el registro.',
+            'error'
+        );
+
+    } finally {
+
+        boton.disabled = false;
+
+        boton.textContent =
+            'Registrar';
+    }
+}
 
 function limpiarFormulario(
     mostrar = true
 ) {
 
     document
-        .getElementById('formulario')
+        .getElementById(
+            'formulario'
+        )
         .reset();
 
     const tienda =
@@ -851,6 +1205,16 @@ function limpiarFormulario(
 
     tienda.disabled = true;
     cliente.disabled = true;
+
+    document
+        .querySelectorAll(
+            'input[type="radio"]'
+        )
+        .forEach(
+            function(input) {
+                input.checked = false;
+            }
+        );
 
     if (mostrar) {
         ocultarMensaje();
@@ -887,14 +1251,31 @@ function ocultarMensaje() {
         'message';
 }
 
-function escaparHTML(valor) {
+function escaparHTML(
+    valor
+) {
 
     return String(valor)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+        .replace(
+            /&/g,
+            '&amp;'
+        )
+        .replace(
+            /</g,
+            '&lt;'
+        )
+        .replace(
+            />/g,
+            '&gt;'
+        )
+        .replace(
+            /"/g,
+            '&quot;'
+        )
+        .replace(
+            /'/g,
+            '&#039;'
+        );
 }
 
 </script>
