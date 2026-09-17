@@ -36,7 +36,6 @@ body {
 .logo {
     font-size: 28px;
     font-weight: 800;
-    letter-spacing: -1px;
 }
 
 .header-title {
@@ -62,7 +61,6 @@ body {
     margin: 0 0 20px;
     font-size: 19px;
     font-weight: 700;
-    color: #333;
 }
 
 .grid {
@@ -80,7 +78,6 @@ body {
     font-size: 14px;
     font-weight: 700;
     margin-bottom: 7px;
-    color: #444;
 }
 
 .field input,
@@ -93,13 +90,18 @@ body {
     font-size: 14px;
     outline: none;
     background: white;
-    transition: .2s;
 }
 
 .field input:focus,
 .field select:focus {
     border-color: #e51c22;
     box-shadow: 0 0 0 3px rgba(229,28,34,.10);
+}
+
+.field select:disabled {
+    background: #f1f1f1;
+    color: #999;
+    cursor: not-allowed;
 }
 
 .question-card {
@@ -159,7 +161,6 @@ body {
     font-size: 14px;
     line-height: 1.35;
     transition: .2s;
-    background: #fff;
 }
 
 .option label:hover {
@@ -193,7 +194,6 @@ body {
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
-    transition: .2s;
 }
 
 .btn-primary {
@@ -215,14 +215,9 @@ body {
     color: #444;
 }
 
-.btn-secondary:hover {
-    background: #ddd;
-}
-
 .loading {
     text-align: center;
     padding: 40px 20px;
-    font-size: 16px;
     color: #666;
 }
 
@@ -266,10 +261,6 @@ body {
         grid-template-columns: 1fr;
     }
 
-    .container {
-        margin-top: 20px;
-    }
-
     .card,
     .question-card {
         padding: 18px;
@@ -302,46 +293,61 @@ body {
     <form id="formulario">
 
         <div class="card">
+
             <h2 class="card-title">Datos del registro</h2>
 
             <div class="grid">
 
                 <div class="field">
-                    <label for="codigoTienda">
-                        Código de tienda <span class="required">*</span>
+                    <label for="region">
+                        Región <span class="required">*</span>
                     </label>
-                    <input
-                        type="text"
-                        id="codigoTienda"
-                        name="CODIGO_TIENDA"
-                        required
-                        autocomplete="off"
-                    >
+
+                    <select id="region" required>
+                        <option value="">Seleccione región</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="codigoTienda">
+                        Tienda <span class="required">*</span>
+                    </label>
+
+                    <select id="codigoTienda" required disabled>
+                        <option value="">Seleccione tienda</option>
+                    </select>
                 </div>
 
                 <div class="field">
                     <label for="dniFuncionario">
                         DNI funcionario <span class="required">*</span>
                     </label>
+
                     <input
                         type="text"
                         id="dniFuncionario"
-                        name="DNI_FUNCIONARIO"
-                        required
                         maxlength="15"
                         autocomplete="off"
+                        required
                     >
+                </div>
+
+                <div class="field">
+                    <label for="dniCliente">
+                        Código de cliente <span class="required">*</span>
+                    </label>
+
+                    <select id="dniCliente" required disabled>
+                        <option value="">Seleccione cliente</option>
+                    </select>
                 </div>
 
                 <div class="field">
                     <label for="tipoDocCliente">
                         Tipo documento cliente <span class="required">*</span>
                     </label>
-                    <select
-                        id="tipoDocCliente"
-                        name="TIPO_DOC_CLIENTE"
-                        required
-                    >
+
+                    <select id="tipoDocCliente" required>
                         <option value="">Seleccione</option>
                         <option value="DNI">DNI</option>
                         <option value="CE">CE</option>
@@ -350,21 +356,8 @@ body {
                     </select>
                 </div>
 
-                <div class="field">
-                    <label for="dniCliente">
-                        DNI / Documento cliente <span class="required">*</span>
-                    </label>
-                    <input
-                        type="text"
-                        id="dniCliente"
-                        name="DNI_CLIENTE"
-                        required
-                        maxlength="20"
-                        autocomplete="off"
-                    >
-                </div>
-
             </div>
+
         </div>
 
         <div id="contenedorPreguntas">
@@ -374,7 +367,9 @@ body {
         </div>
 
         <div class="card">
+
             <div class="actions">
+
                 <button
                     type="button"
                     class="btn btn-secondary"
@@ -390,7 +385,9 @@ body {
                 >
                     Registrar
                 </button>
+
             </div>
+
         </div>
 
     </form>
@@ -403,46 +400,210 @@ const API_URL = 'AKfycbxjuKy636oJTr1HSD--BqYSpMYy5oeqiNUL_sbnXeJNTuAvAokPSnqvJuQ
 
 let preguntas = [];
 
-document.addEventListener('DOMContentLoaded', cargarPreguntas);
+let maestro = {
+    REGIONES: [],
+    TIENDAS: {},
+    CLIENTES: {}
+};
 
-async function cargarPreguntas() {
-    const contenedor = document.getElementById('contenedorPreguntas');
+document.addEventListener(
+    'DOMContentLoaded',
+    iniciar
+);
+
+async function iniciar() {
 
     try {
+
+        await Promise.all([
+            cargarMaestro(),
+            cargarPreguntas()
+        ]);
+
+    } catch (error) {
+
+        mostrarMensaje(
+            'No se pudo cargar la información inicial.',
+            'error'
+        );
+    }
+}
+
+async function cargarMaestro() {
+
+    const response = await fetch(
+        API_URL + '?action=maestro'
+    );
+
+    if (!response.ok) {
+        throw new Error(
+            'No se pudo cargar el maestro'
+        );
+    }
+
+    maestro = await response.json();
+
+    cargarRegiones();
+}
+
+function cargarRegiones() {
+
+    const select = document.getElementById('region');
+
+    select.innerHTML =
+        '<option value="">Seleccione región</option>';
+
+    maestro.REGIONES.forEach(function(region) {
+
+        const option =
+            document.createElement('option');
+
+        option.value = region;
+        option.textContent = region;
+
+        select.appendChild(option);
+    });
+}
+
+document
+    .getElementById('region')
+    .addEventListener(
+        'change',
+        cargarTiendas
+    );
+
+function cargarTiendas() {
+
+    const region =
+        document.getElementById('region').value;
+
+    const tienda =
+        document.getElementById('codigoTienda');
+
+    const cliente =
+        document.getElementById('dniCliente');
+
+    tienda.innerHTML =
+        '<option value="">Seleccione tienda</option>';
+
+    cliente.innerHTML =
+        '<option value="">Seleccione cliente</option>';
+
+    cliente.disabled = true;
+
+    if (!region) {
+
+        tienda.disabled = true;
+        return;
+    }
+
+    const tiendas =
+        maestro.TIENDAS[region] || [];
+
+    tiendas.forEach(function(nombre) {
+
+        const option =
+            document.createElement('option');
+
+        option.value = nombre;
+        option.textContent = nombre;
+
+        tienda.appendChild(option);
+    });
+
+    tienda.disabled = false;
+}
+
+document
+    .getElementById('codigoTienda')
+    .addEventListener(
+        'change',
+        cargarClientes
+    );
+
+function cargarClientes() {
+
+    const tienda =
+        document.getElementById('codigoTienda').value;
+
+    const cliente =
+        document.getElementById('dniCliente');
+
+    cliente.innerHTML =
+        '<option value="">Seleccione cliente</option>';
+
+    if (!tienda) {
+
+        cliente.disabled = true;
+        return;
+    }
+
+    const clientes =
+        maestro.CLIENTES[tienda] || [];
+
+    clientes.forEach(function(codigo) {
+
+        const option =
+            document.createElement('option');
+
+        option.value = codigo;
+        option.textContent = codigo;
+
+        cliente.appendChild(option);
+    });
+
+    cliente.disabled = false;
+}
+
+async function cargarPreguntas() {
+
+    const contenedor =
+        document.getElementById(
+            'contenedorPreguntas'
+        );
+
+    try {
+
         const response = await fetch(
             API_URL + '?action=preguntas'
         );
 
         if (!response.ok) {
-            throw new Error('No se pudo consultar el maestro');
+            throw new Error(
+                'No se pudo consultar el maestro'
+            );
         }
 
-        const data = await response.json();
-
-        if (!Array.isArray(data)) {
-            throw new Error('Respuesta inválida del servidor');
-        }
+        const data =
+            await response.json();
 
         preguntas = data;
 
         renderizarPreguntas();
 
     } catch (error) {
+
         contenedor.innerHTML = `
             <div class="question-card">
                 <div class="message error" style="display:block">
                     No se pudieron cargar las preguntas.
-                    Verifique la URL del Web App de Apps Script.
                 </div>
             </div>
         `;
+
+        throw error;
     }
 }
 
 function renderizarPreguntas() {
-    const contenedor = document.getElementById('contenedorPreguntas');
+
+    const contenedor =
+        document.getElementById(
+            'contenedorPreguntas'
+        );
 
     if (!preguntas.length) {
+
         contenedor.innerHTML = `
             <div class="question-card">
                 <div class="empty">
@@ -450,57 +611,85 @@ function renderizarPreguntas() {
                 </div>
             </div>
         `;
+
         return;
     }
 
     contenedor.innerHTML = '';
 
-    preguntas.forEach(function(pregunta, index) {
+    preguntas.forEach(function(
+        pregunta,
+        index
+    ) {
 
-        const card = document.createElement('div');
-        card.className = 'question-card';
+        const card =
+            document.createElement('div');
 
-        const numero = document.createElement('div');
-        numero.className = 'question-number';
-        numero.textContent = index + 1;
+        card.className =
+            'question-card';
 
-        const titulo = document.createElement('div');
-        titulo.className = 'question-title';
+        const numero =
+            document.createElement('div');
+
+        numero.className =
+            'question-number';
+
+        numero.textContent =
+            index + 1;
+
+        const titulo =
+            document.createElement('div');
+
+        titulo.className =
+            'question-title';
+
         titulo.innerHTML =
-            escaparHTML(pregunta.PREGUNTA) +
+            escaparHTML(
+                pregunta.PREGUNTA
+            ) +
             ' <span class="required">*</span>';
 
-        const opciones = document.createElement('div');
-        opciones.className = 'options';
+        const opciones =
+            document.createElement('div');
 
-        pregunta.RESPUESTAS.forEach(function(respuesta, respuestaIndex) {
+        opciones.className =
+            'options';
 
-            const option = document.createElement('div');
-            option.className = 'option';
+        pregunta.RESPUESTAS.forEach(
+            function(
+                respuesta,
+                respuestaIndex
+            ) {
 
-            const idRadio =
-                'pregunta_' +
-                pregunta.ID_PREGUNTA +
-                '_' +
-                respuestaIndex;
+                const option =
+                    document.createElement('div');
 
-            option.innerHTML = `
-                <input
-                    type="radio"
-                    id="${idRadio}"
-                    name="pregunta_${pregunta.ID_PREGUNTA}"
-                    value="${escaparHTML(respuesta.ID_RESPUESTA)}"
-                    data-id-pregunta="${escaparHTML(pregunta.ID_PREGUNTA)}"
-                    required
-                >
+                option.className =
+                    'option';
 
-                <label for="${idRadio}">
-                    ${escaparHTML(respuesta.RESPUESTA)}
-                </label>
-            `;
+                const idRadio =
+                    'pregunta_' +
+                    pregunta.ID_PREGUNTA +
+                    '_' +
+                    respuestaIndex;
 
-            opciones.appendChild(option);
-        });
+                option.innerHTML = `
+                    <input
+                        type="radio"
+                        id="${idRadio}"
+                        name="pregunta_${pregunta.ID_PREGUNTA}"
+                        value="${escaparHTML(respuesta.ID_RESPUESTA)}"
+                        required
+                    >
+
+                    <label for="${idRadio}">
+                        ${escaparHTML(respuesta.RESPUESTA)}
+                    </label>
+                `;
+
+                opciones.appendChild(option);
+            }
+        );
 
         card.appendChild(numero);
         card.appendChild(titulo);
@@ -512,138 +701,190 @@ function renderizarPreguntas() {
 
 document
     .getElementById('formulario')
-    .addEventListener('submit', async function(event) {
+    .addEventListener(
+        'submit',
+        async function(event) {
 
-        event.preventDefault();
+            event.preventDefault();
 
-        ocultarMensaje();
+            ocultarMensaje();
 
-        const boton = document.getElementById('btnGuardar');
+            if (!this.checkValidity()) {
 
-        if (!this.checkValidity()) {
-            this.reportValidity();
-            return;
-        }
-
-        const respuestas = [];
-
-        for (const pregunta of preguntas) {
-
-            const seleccionada = document.querySelector(
-                `input[name="pregunta_${pregunta.ID_PREGUNTA}"]:checked`
-            );
-
-            if (!seleccionada) {
-                mostrarMensaje(
-                    'Debe responder todas las preguntas.',
-                    'error'
-                );
-
-                document
-                    .querySelector(
-                        `input[name="pregunta_${pregunta.ID_PREGUNTA}"]`
-                    )
-                    ?.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
+                this.reportValidity();
 
                 return;
             }
 
-            respuestas.push({
-                ID_PREGUNTA: pregunta.ID_PREGUNTA,
-                ID_RESPUESTA: seleccionada.value
-            });
+            const respuestas = [];
+
+            for (const pregunta of preguntas) {
+
+                const seleccionada =
+                    document.querySelector(
+                        `input[name="pregunta_${pregunta.ID_PREGUNTA}"]:checked`
+                    );
+
+                if (!seleccionada) {
+
+                    mostrarMensaje(
+                        'Debe responder todas las preguntas.',
+                        'error'
+                    );
+
+                    return;
+                }
+
+                respuestas.push({
+                    ID_PREGUNTA:
+                        pregunta.ID_PREGUNTA,
+
+                    ID_RESPUESTA:
+                        seleccionada.value
+                });
+            }
+
+            const payload = {
+
+                REGION:
+                    document.getElementById(
+                        'region'
+                    ).value,
+
+                CODIGO_TIENDA:
+                    document.getElementById(
+                        'codigoTienda'
+                    ).value,
+
+                DNI_FUNCIONARIO:
+                    document.getElementById(
+                        'dniFuncionario'
+                    ).value.trim(),
+
+                TIPO_DOC_CLIENTE:
+                    document.getElementById(
+                        'tipoDocCliente'
+                    ).value,
+
+                DNI_CLIENTE:
+                    document.getElementById(
+                        'dniCliente'
+                    ).value,
+
+                RESPUESTAS:
+                    respuestas
+            };
+
+            const boton =
+                document.getElementById(
+                    'btnGuardar'
+                );
+
+            boton.disabled = true;
+            boton.textContent =
+                'Registrando...';
+
+            try {
+
+                await fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type':
+                            'text/plain;charset=utf-8'
+                    },
+                    body:
+                        JSON.stringify(payload)
+                });
+
+                mostrarMensaje(
+                    'Registro guardado correctamente.',
+                    'success'
+                );
+
+                limpiarFormulario(false);
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+
+            } catch (error) {
+
+                mostrarMensaje(
+                    'No se pudo enviar el registro.',
+                    'error'
+                );
+
+            } finally {
+
+                boton.disabled = false;
+                boton.textContent =
+                    'Registrar';
+            }
         }
+    );
 
-        const payload = {
-            CODIGO_TIENDA:
-                document.getElementById('codigoTienda').value.trim(),
-
-            DNI_FUNCIONARIO:
-                document.getElementById('dniFuncionario').value.trim(),
-
-            TIPO_DOC_CLIENTE:
-                document.getElementById('tipoDocCliente').value.trim(),
-
-            DNI_CLIENTE:
-                document.getElementById('dniCliente').value.trim(),
-
-            RESPUESTAS: respuestas
-        };
-
-        boton.disabled = true;
-        boton.textContent = 'Registrando...';
-
-        try {
-
-            await fetch(API_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'text/plain;charset=utf-8'
-                },
-                body: JSON.stringify(payload)
-            });
-
-            mostrarMensaje(
-                'Registro guardado correctamente.',
-                'success'
-            );
-
-            limpiarFormulario(false);
-
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-
-        } catch (error) {
-
-            mostrarMensaje(
-                'No se pudo enviar el registro. Intente nuevamente.',
-                'error'
-            );
-
-        } finally {
-
-            boton.disabled = false;
-            boton.textContent = 'Registrar';
-        }
-    });
-
-function limpiarFormulario(mostrar = true) {
+function limpiarFormulario(
+    mostrar = true
+) {
 
     document
         .getElementById('formulario')
         .reset();
 
-    document
-        .querySelectorAll('input[type="radio"]')
-        .forEach(function(input) {
-            input.checked = false;
-        });
+    const tienda =
+        document.getElementById(
+            'codigoTienda'
+        );
+
+    const cliente =
+        document.getElementById(
+            'dniCliente'
+        );
+
+    tienda.innerHTML =
+        '<option value="">Seleccione tienda</option>';
+
+    cliente.innerHTML =
+        '<option value="">Seleccione cliente</option>';
+
+    tienda.disabled = true;
+    cliente.disabled = true;
 
     if (mostrar) {
         ocultarMensaje();
     }
 }
 
-function mostrarMensaje(texto, tipo) {
+function mostrarMensaje(
+    texto,
+    tipo
+) {
 
-    const mensaje = document.getElementById('mensaje');
+    const mensaje =
+        document.getElementById(
+            'mensaje'
+        );
 
-    mensaje.textContent = texto;
-    mensaje.className = 'message ' + tipo;
+    mensaje.textContent =
+        texto;
+
+    mensaje.className =
+        'message ' + tipo;
 }
 
 function ocultarMensaje() {
 
-    const mensaje = document.getElementById('mensaje');
+    const mensaje =
+        document.getElementById(
+            'mensaje'
+        );
 
     mensaje.textContent = '';
-    mensaje.className = 'message';
+
+    mensaje.className =
+        'message';
 }
 
 function escaparHTML(valor) {
