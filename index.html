@@ -1333,8 +1333,6 @@ async function enviarFormulario(
         });
     }
 
-    // CODIGO_TIENDA ya viaja con el código de tienda (no el nombre),
-    // porque el <select> de tienda ahora usa t.codigo como value.
     const payload = {
 
         REGION:
@@ -1351,15 +1349,6 @@ async function enviarFormulario(
             document.getElementById(
                 'dniFuncionario'
             ).value.trim(),
-
-        TIPO_DOC_CLIENTE:
-            (
-              maestro.DETALLE[
-                document.getElementById('codigoTienda').value +
-                '|' +
-                document.getElementById('dniCliente').value
-              ] || {}
-            ).PER_TIPO_IDENTIFICACION || '',
 
         DNI_CLIENTE:
             document.getElementById(
