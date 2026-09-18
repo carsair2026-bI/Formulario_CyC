@@ -732,13 +732,16 @@ function ejecutarJSONP(
         }
     }
 
-    window[callbackName] =
-        function(data) {
+    window[callbackName] = function(data) {
 
-            limpiar();
-
-            success(data);
+          console.log('JSONP OK', action, data);
+        
+          limpiar();
+        
+          success(data);
+        
         };
+
 
     script.src =
         API_URL +
@@ -749,14 +752,20 @@ function ejecutarJSONP(
         '&t=' +
         Date.now();
 
-    script.onerror =
-        function() {
-
-            limpiar();
-
-            if (error) {
-                error();
-            }
+    script.onerror = function(errorEvent) {
+        
+          console.error(
+            'JSONP ERROR',
+            action,
+            errorEvent
+          );
+        
+          limpiar();
+        
+          if (error) {
+            error();
+          }
+        
         };
 
     document.body.appendChild(
