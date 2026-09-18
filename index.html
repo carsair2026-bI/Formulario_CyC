@@ -381,10 +381,9 @@ body {
     <div class="header-content">
 
         <img
-            src="./logo.png"
-            class="logo"
-            alt="Carsa"
-        >
+        src="https://carsair2026-bi.github.io/Formulario_CyC/logo.png"
+        class="logo"
+        alt="Carsa">
 
         <div class="header-title">
             Registro de Gestión Comercial
@@ -863,49 +862,46 @@ document
 
 function cargarClientes() {
 
-    const tienda =
-        document.getElementById(
-            'codigoTienda'
-        ).value;
+  const tienda =
+    document.getElementById(
+      'codigoTienda'
+    ).value;
 
-    const cliente =
-        document.getElementById(
-            'dniCliente'
-        );
-
-    cliente.innerHTML =
-        '<option value="">Seleccione cliente</option>';
-
-    cliente.disabled = true;
-
-    if (!tienda) {
-        return;
-    }
-
-    const clientes =
-        maestro.CLIENTES[tienda] || [];
-
-    clientes.forEach(
-        function(codigo) {
-
-            const option =
-                document.createElement(
-                    'option'
-                );
-
-            option.value = codigo;
-            option.textContent = codigo;
-
-            cliente.appendChild(
-                option
-            );
-        }
+  const cliente =
+    document.getElementById(
+      'dniCliente'
     );
 
-    cliente.disabled =
-        clientes.length === 0;
-}
+  cliente.innerHTML =
+    '<option value="">Seleccione cliente</option>';
 
+  cliente.disabled = true;
+
+  if (!tienda) {
+    return;
+  }
+
+  const clientes =
+    maestro.CLIENTES[tienda] || [];
+
+  clientes.forEach(function(codigo) {
+
+    const option =
+      document.createElement(
+        'option'
+      );
+
+    option.value = codigo;
+    option.textContent = codigo;
+
+    cliente.appendChild(option);
+
+  });
+
+  cliente.disabled =
+    clientes.length === 0;
+}
+    
 function renderizarPreguntas() {
 
     const contenedor =
@@ -1253,31 +1249,15 @@ function ocultarMensaje() {
         'message';
 }
 
-function escaparHTML(
-    valor
-) {
+function escaparHTML(valor) {
 
-    return String(valor)
-        .replace(
-            /&/g,
-            '&amp;'
-        )
-        .replace(
-            /</g,
-            '&lt;'
-        )
-        .replace(
-            />/g,
-            '&gt;'
-        )
-        .replace(
-            /"/g,
-            '&quot;'
-        )
-        .replace(
-            /'/g,
-            '&#039;'
-        );
+  return String(valor)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
 }
 
 </script>
