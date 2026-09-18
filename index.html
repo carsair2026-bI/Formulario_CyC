@@ -110,6 +110,9 @@ body {
     line-height: 1.2;
     font-weight: 700;
     color: #202124;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .grid {
@@ -295,6 +298,69 @@ body {
     background: #dedede;
 }
 
+/* ---- Panel de detalle del cliente ---- */
+
+.detalle-grid {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.detalle-item {
+    display: flex;
+    flex-direction: column;
+    background: #f8f9fb;
+    border: 1px solid #ececec;
+    border-radius: 12px;
+    padding: 14px 16px;
+}
+
+.detalle-item-completo {
+    grid-column: 1 / -1;
+}
+
+.detalle-etiqueta {
+    font-size: 12px;
+    font-weight: 700;
+    color: #8a8a8a;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    margin-bottom: 6px;
+}
+
+.detalle-valor {
+    font-size: 16px;
+    font-weight: 600;
+    color: #202124;
+    word-break: break-word;
+}
+
+.badge-estado {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.badge-aprobado {
+    background: #eafaf0;
+    color: #187333;
+}
+
+.badge-rechazado {
+    background: #fff0f1;
+    color: #c81920;
+}
+
+.badge-pendiente {
+    background: #fff8e6;
+    color: #9a6b00;
+}
+
+.badge-otro {
+    background: #eef0f2;
+    color: #555;
+}
+
 @media (max-width: 900px) {
 
     .header {
@@ -313,6 +379,10 @@ body {
 
     .grid {
         grid-template-columns: 1fr;
+    }
+
+    .detalle-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .options {
@@ -360,6 +430,10 @@ body {
     .field select {
         height: 56px;
         font-size: 16px;
+    }
+
+    .detalle-grid {
+        grid-template-columns: 1fr;
     }
 
     .actions {
@@ -467,7 +541,7 @@ body {
                 <div class="field">
 
                     <label for="dniCliente">
-                        Código de cliente
+                        Cliente
                         <span class="required">*</span>
                     </label>
 
@@ -523,6 +597,17 @@ body {
 
         </div>
 
+        <div class="card" id="tarjetaDetalleCliente" style="display:none;">
+
+            <h2 class="card-title">
+                📋 Información de la última solicitud
+            </h2>
+
+            <div class="grid detalle-grid" id="detalleClienteContenido">
+            </div>
+
+        </div>
+
         <div id="contenedorPreguntas">
 
             <div class="question-card">
@@ -573,10 +658,46 @@ let preguntas = [];
 let maestro = {
     REGIONES: [],
     TIENDAS: {},
-    CLIENTES: {}
+    CLIENTES: {},
+    DETALLE: {}
 };
 
 let cargasPendientes = 0;
+
+// Campos mostrados en el panel de detalle del cliente, en el orden
+// en que aparecen. "ancho: 'completo'" hace que ocupen todo el ancho
+// de la fila (útil para el comentario, que suele ser largo).
+const CAMPOS_DETALLE = [
+    { clave: 'VSO_ID', etiqueta: 'N.º de solicitud' },
+    { clave: 'VSO_ESTADO_SOLICITUD', etiqueta: 'Estado de la solicitud' },
+    { clave: 'VSO_FECHA_ENVIO', etiqueta: 'Fecha de envío' },
+    { clave: 'VSO_FECHA_ULT_ACT', etiqueta: 'Última actualización' },
+    { clave: 'APR_PERFIL_TXT', etiqueta: 'Perfil' },
+    { clave: 'VSO_PERFIL_APROBADO', etiqueta: 'Perfil aprobado' },
+    { clave: 'APR_FILTROS', etiqueta: 'Filtro aplicado' },
+    { clave: 'PER_TIPO_IDENTIFICACION', etiqueta: 'Tipo de documento' },
+    { clave: 'VSO_TIPO_SOLICITUD', etiqueta: 'Tipo de solicitud' },
+    { clave: 'VSO_ORIGEN_SOLICITUD', etiqueta: 'Origen de la solicitud' },
+    { clave: 'VSO_TIPO_ODV', etiqueta: 'Tipo ODV' },
+    { clave: 'VSO_PRODUCTO_PVP', etiqueta: 'Producto (PVP)' },
+    { clave: 'VSO_CATEGORIA_MOTO', etiqueta: 'Categoría moto' },
+    { clave: 'VSO_CUPO_SOLICITADO', etiqueta: 'Cupo solicitado' },
+    { clave: 'VSO_CUPO_APROBADO', etiqueta: 'Cupo aprobado' },
+    { clave: 'VSO_CUPO_DISPONIBLE', etiqueta: 'Cupo disponible' },
+    { clave: 'VSO_TASA_SOLICITADA', etiqueta: 'Tasa solicitada' },
+    { clave: 'VSO_TASA_APROBADA', etiqueta: 'Tasa aprobada' },
+    { clave: 'VSO_TASA_ETIQUETA', etiqueta: 'Tasa etiqueta' },
+    { clave: 'VSO_INICIAL_SOLICITADA', etiqueta: 'Inicial solicitada' },
+    { clave: 'VSO_INICIAL_APROBADA', etiqueta: 'Inicial aprobada' },
+    { clave: 'VSO_PLAZO_SOLICITADO', etiqueta: 'Plazo solicitado' },
+    { clave: 'VSO_PLAZO', etiqueta: 'Plazo' },
+    { clave: 'VSO_CUOTA_SOLICITADA', etiqueta: 'Cuota solicitada' },
+    { clave: 'VSO_MONTO', etiqueta: 'Monto' },
+    { clave: 'VSO_MAF', etiqueta: 'MAF' },
+    { clave: 'VSO_ASIGNACION_INGRESOS', etiqueta: 'Asignación de ingresos' },
+    { clave: 'VSO_GARANTE', etiqueta: 'Garante' },
+    { clave: 'VSO_COMENTARIO', etiqueta: 'Comentario', ancho: 'completo' }
+];
 
 document.addEventListener(
     'DOMContentLoaded',
@@ -834,23 +955,27 @@ function cargarTiendas() {
     tienda.disabled = true;
     cliente.disabled = true;
 
+    ocultarDetalleCliente();
+
     if (!region) {
         return;
     }
 
+    // maestro.TIENDAS[region] es una lista de {codigo, nombre}.
+    // Se muestra el nombre, pero el valor guardado es el código.
     const tiendas =
         maestro.TIENDAS[region] || [];
 
     tiendas.forEach(
-        function(nombre) {
+        function(t) {
 
             const option =
                 document.createElement(
                     'option'
                 );
 
-            option.value = nombre;
-            option.textContent = nombre;
+            option.value = t.codigo;
+            option.textContent = t.nombre;
 
             tienda.appendChild(
                 option
@@ -871,7 +996,7 @@ document
 
 function cargarClientes() {
 
-  const tienda =
+  const codigoTienda =
     document.getElementById(
       'codigoTienda'
     ).value;
@@ -886,22 +1011,26 @@ function cargarClientes() {
 
   cliente.disabled = true;
 
-  if (!tienda) {
+  ocultarDetalleCliente();
+
+  if (!codigoTienda) {
     return;
   }
 
+  // maestro.CLIENTES[codigoTienda] es una lista de {dni, nombre}.
+  // Se muestra el nombre del cliente, pero el valor guardado es el DNI.
   const clientes =
-    maestro.CLIENTES[tienda] || [];
+    maestro.CLIENTES[codigoTienda] || [];
 
-  clientes.forEach(function(codigo) {
+  clientes.forEach(function(c) {
 
     const option =
       document.createElement(
         'option'
       );
 
-    option.value = codigo;
-    option.textContent = codigo;
+    option.value = c.dni;
+    option.textContent = c.nombre;
 
     cliente.appendChild(option);
 
@@ -910,7 +1039,151 @@ function cargarClientes() {
   cliente.disabled =
     clientes.length === 0;
 }
-    
+
+document
+    .getElementById('dniCliente')
+    .addEventListener(
+        'change',
+        mostrarDetalleCliente
+    );
+
+function ocultarDetalleCliente() {
+
+    document.getElementById(
+        'tarjetaDetalleCliente'
+    ).style.display = 'none';
+}
+
+function claseBadgeEstado(estado) {
+
+    const valor =
+        String(estado)
+            .trim()
+            .toLowerCase();
+
+    if (valor.indexOf('aprob') !== -1) {
+        return 'badge-aprobado';
+    }
+
+    if (valor.indexOf('rechaz') !== -1) {
+        return 'badge-rechazado';
+    }
+
+    if (valor.indexOf('pendiente') !== -1) {
+        return 'badge-pendiente';
+    }
+
+    return 'badge-otro';
+}
+
+function mostrarDetalleCliente() {
+
+    const tarjeta =
+        document.getElementById(
+            'tarjetaDetalleCliente'
+        );
+
+    const contenido =
+        document.getElementById(
+            'detalleClienteContenido'
+        );
+
+    const codigoTienda =
+        document.getElementById(
+            'codigoTienda'
+        ).value;
+
+    const dni =
+        document.getElementById(
+            'dniCliente'
+        ).value;
+
+    if (!codigoTienda || !dni) {
+        tarjeta.style.display = 'none';
+        return;
+    }
+
+    const clave =
+        codigoTienda + '|' + dni;
+
+    const detalle =
+        (maestro.DETALLE || {})[clave];
+
+    contenido.innerHTML = '';
+
+    if (!detalle) {
+
+        contenido.innerHTML = `
+            <div class="empty">
+                No hay información adicional registrada para este cliente en esta tienda.
+            </div>
+        `;
+
+        tarjeta.style.display = 'block';
+
+        return;
+    }
+
+    CAMPOS_DETALLE.forEach(
+        function(campo) {
+
+            const valor =
+                detalle[campo.clave];
+
+            if (
+                valor === undefined ||
+                valor === null ||
+                String(valor).trim() === ''
+            ) {
+                return;
+            }
+
+            const item =
+                document.createElement(
+                    'div'
+                );
+
+            item.className =
+                'detalle-item' +
+                (
+                    campo.ancho === 'completo'
+                        ? ' detalle-item-completo'
+                        : ''
+                );
+
+            let valorHtml =
+                escaparHTML(valor);
+
+            if (campo.clave === 'VSO_ESTADO_SOLICITUD') {
+
+                valorHtml = `
+                    <span class="badge-estado ${claseBadgeEstado(valor)}">
+                        ${escaparHTML(valor)}
+                    </span>
+                `;
+            }
+
+            item.innerHTML = `
+                <div class="detalle-etiqueta">${escaparHTML(campo.etiqueta)}</div>
+                <div class="detalle-valor">${valorHtml}</div>
+            `;
+
+            contenido.appendChild(item);
+        }
+    );
+
+    if (!contenido.children.length) {
+
+        contenido.innerHTML = `
+            <div class="empty">
+                No hay información adicional registrada para este cliente en esta tienda.
+            </div>
+        `;
+    }
+
+    tarjeta.style.display = 'block';
+}
+
 function renderizarPreguntas() {
 
     const contenedor =
@@ -1096,6 +1369,8 @@ async function enviarFormulario(
         });
     }
 
+    // CODIGO_TIENDA ya viaja con el código de tienda (no el nombre),
+    // porque el <select> de tienda ahora usa t.codigo como value.
     const payload = {
 
         REGION:
@@ -1212,6 +1487,8 @@ function limpiarFormulario(
 
     tienda.disabled = true;
     cliente.disabled = true;
+
+    ocultarDetalleCliente();
 
     document
         .querySelectorAll(
