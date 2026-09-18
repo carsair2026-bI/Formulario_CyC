@@ -557,42 +557,6 @@ body {
 
                 </div>
 
-                <div class="field">
-
-                    <label for="tipoDocCliente">
-                        Tipo documento cliente
-                        <span class="required">*</span>
-                    </label>
-
-                    <select
-                        id="tipoDocCliente"
-                        required
-                    >
-
-                        <option value="">
-                            Seleccione
-                        </option>
-
-                        <option value="DNI">
-                            DNI
-                        </option>
-
-                        <option value="CE">
-                            CE
-                        </option>
-
-                        <option value="PASAPORTE">
-                            PASAPORTE
-                        </option>
-
-                        <option value="OTRO">
-                            OTRO
-                        </option>
-
-                    </select>
-
-                </div>
-
             </div>
 
         </div>
@@ -1389,9 +1353,13 @@ async function enviarFormulario(
             ).value.trim(),
 
         TIPO_DOC_CLIENTE:
-            document.getElementById(
-                'tipoDocCliente'
-            ).value,
+            (
+              maestro.DETALLE[
+                document.getElementById('codigoTienda').value +
+                '|' +
+                document.getElementById('dniCliente').value
+              ] || {}
+            ).PER_TIPO_IDENTIFICACION || '',
 
         DNI_CLIENTE:
             document.getElementById(
